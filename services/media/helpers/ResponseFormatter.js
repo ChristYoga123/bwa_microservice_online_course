@@ -1,6 +1,7 @@
 function success(code, message, data) {
     return {
         meta: {
+            status: "success",
             code: code,
             message: message
         },
@@ -11,6 +12,7 @@ function success(code, message, data) {
 function error(code, message) {
     return {
         meta: {
+            status: "error",
             code: code,
             message: message
         },
