@@ -14,18 +14,19 @@ async function register(req, res)
             email: req.body.email,
             password: req.body.password,
         }
-        await registerValidator(data)
+        try{
+            await registerValidator(data)
+        }catch(err){
+            return res.status(400).json(error(400, err.message))
+        }
         data.password = bcrypt.hashSync(data.password, 10)
         const newUser = await prisma.user.create({data: data})
         // hide password
         delete newUser.password
-        return res.status(201).json(success("User created", newUser))
+        return res.status(201).json(success(201, "User created", newUser))
     } catch(err)
     {
-        return res.status(500).json({
-            status: "error",
-            message: err.message
-        })
+        return res.status(500).json(error(500, err.message))
     }
 }
 
