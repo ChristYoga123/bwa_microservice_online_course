@@ -1,3 +1,4 @@
+require("dotenv").config();
 const isBase64 = require("is-base64");
 const base64Img = require("base64-img")
 const {success, error} = require("../helpers/ResponseFormatter");
@@ -19,7 +20,7 @@ async function store(req, res) {
         const filename = filepath.split("\\").pop().split("/").pop();
         const data = await prisma.media.create({
             data: {
-                image: `images/${filename}`
+                image: `${process.env.APP_URL}/images/${filename}`,
             }
         })
         return res.json(success(200, "Image uploaded successfully", data));
@@ -42,7 +43,9 @@ async function destroy(req, res) {
     {
         return res.status(404).json(error(404, "Image not found"));
     }
-    fs.unlink(`./public/${image.image}`, async (err) => {
+    // string replace
+    const path = image.image.replace(`${process.env.APP_URL}`, "");
+    fs.unlink(`./public/${path}`, async (err) => {
         if(err)
         {
             return res.status(400).json(error(400, err.message));
