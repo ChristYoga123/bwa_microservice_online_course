@@ -6,7 +6,7 @@ const {APP_TIMEOUT} = process.env;
 module.exports = (baseUrl) => {
     return axios.create({
         baseURL: baseUrl,
-        timeout: 5000,
+        timeout: parseInt(APP_TIMEOUT),
         headers: {'X-Custom-Header': 'foobar'}
     })
 }
