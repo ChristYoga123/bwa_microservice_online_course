@@ -1,0 +1,15 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DB_URL")
+}
+
+model media {
+  id        Int      @id @default(autoincrement())
+  image     String   @unique(map: "Media_image_key")
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
