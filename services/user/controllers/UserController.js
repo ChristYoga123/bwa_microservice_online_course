@@ -89,11 +89,6 @@ async function updateProfile(req, res)
             const emailExist = await prisma.user.findUnique({where: {email: data.email}})
             if(emailExist && data.email != user.email) return res.status(400).json(error(400, "Email already exists"))
         }
-        if(data.name)
-        {
-            const nameExist = await prisma.user.findUnique({where: {name: data.name}})
-            if(nameExist && data.name != user.name) return res.status(400).json(error(400, "Name already exists"))
-        }
         data.password = bcrypt.hashSync(data.password, 10)
         const updatedUser = await prisma.user.update({
             where: {id: parseInt(id)}, 
@@ -103,13 +98,71 @@ async function updateProfile(req, res)
         return res.status(200).json(success(200, "User updated", updatedUser))
     } catch(err)
     {
-        return res.status(500).json(error(500, err.message))
+        return res.status(500).json(error(500, "User data has been taken"))
     }
 
+}
+
+async function getUserById(req, res)
+{
+    try
+    {
+        const id = req.params.id
+        const user = await prisma.user.findUnique({
+            where: {id: parseInt(id)},
+            select: {id: true, name: true, profession: true, avatar: true, email: true}
+        })
+        if(!user) return res.status(404).json(error(404, "User not found"))
+        return res.status(200).json(success(200, "User found", user))
+    } catch(err)
+    {
+        return res.status(500).json(error(500, err.message))
+    }
+}
+
+async function getAllUser(req, res)
+{
+    const listIdParams = req.query.list_id || []
+    const listId = listIdParams.map(id => parseInt(id))
+    const sqlOption = {
+        select: {id: true, name: true, profession: true, avatar: true, email: true}
+    }
+    try
+    {
+        if(listId.length)
+        {
+            sqlOption.where = {id: {in: listId}}
+        }
+        const users = await prisma.user.findMany({
+            ...sqlOption
+        })
+        return res.status(200).json(success(200, "Users found", users))
+    } catch(err)
+    {
+        return res.status(500).json(error(500, err.message))
+    }
+}
+
+async function logout(req, res)
+{
+    const userId = req.body.user_id
+    try
+    {
+        const user = await prisma.user.findUnique({where: {id: parseInt(userId)}})
+        if(!user) return res.status(404).json(error(404, "User not found"))
+        await prisma.refreshToken.deleteMany({where: {user_id: parseInt(userId)}})
+        return res.status(200).json(success(200, "Logout success"))
+    } catch(err)
+    {
+        return res.status(500).json(error(500, err.message))
+    }
 }
 
 module.exports = {
     register,
     login,
-    updateProfile
+    updateProfile,
+    getUserById,
+    getAllUser,
+    logout
 }
