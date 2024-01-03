@@ -148,10 +148,26 @@ async function getAllUser(req, res)
     }
 }
 
+async function logout(req, res)
+{
+    const userId = req.body.user_id
+    try
+    {
+        const user = await prisma.user.findUnique({where: {id: parseInt(userId)}})
+        if(!user) return res.status(404).json(error(404, "User not found"))
+        await prisma.refreshToken.deleteMany({where: {user_id: parseInt(userId)}})
+        return res.status(200).json(success(200, "Logout success"))
+    } catch(err)
+    {
+        return res.status(500).json(error(500, err.message))
+    }
+}
+
 module.exports = {
     register,
     login,
     updateProfile,
     getUserById,
-    getAllUser
+    getAllUser,
+    logout
 }

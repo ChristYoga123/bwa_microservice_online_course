@@ -20,7 +20,7 @@ model User {
   password  String
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
-  refresh_token RefreshToken?
+  refresh_token RefreshToken[]
 }
 
 enum Role {
@@ -30,8 +30,8 @@ enum Role {
 
 model RefreshToken {
   id        Int      @id @default(autoincrement())
-  token     String
-  user_id   Int     @unique
+  token     String  @unique
+  user_id   Int
   user      User     @relation(fields: [user_id], references: [id])
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
