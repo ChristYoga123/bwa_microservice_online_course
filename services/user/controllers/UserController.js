@@ -108,8 +108,50 @@ async function updateProfile(req, res)
 
 }
 
+async function getUserById(req, res)
+{
+    try
+    {
+        const id = req.params.id
+        const user = await prisma.user.findUnique({
+            where: {id: parseInt(id)},
+            select: {id: true, name: true, profession: true, avatar: true, email: true}
+        })
+        if(!user) return res.status(404).json(error(404, "User not found"))
+        return res.status(200).json(success(200, "User found", user))
+    } catch(err)
+    {
+        return res.status(500).json(error(500, err.message))
+    }
+}
+
+async function getAllUser(req, res)
+{
+    const listIdParams = req.query.list_id || []
+    const listId = listIdParams.map(id => parseInt(id))
+    const sqlOption = {
+        select: {id: true, name: true, profession: true, avatar: true, email: true}
+    }
+    try
+    {
+        if(listId.length)
+        {
+            sqlOption.where = {id: {in: listId}}
+        }
+        const users = await prisma.user.findMany({
+            ...sqlOption
+        })
+        return res.status(200).json(success(200, "Users found", users))
+    } catch(err)
+    {
+        return res.status(500).json(error(500, err.message))
+    }
+}
+
 module.exports = {
     register,
     login,
-    updateProfile
+    updateProfile,
+    getUserById,
+    getAllUser
 }
