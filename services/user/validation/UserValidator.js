@@ -14,6 +14,7 @@ const uniqueEmail = async (email) => {
     }
     return true;
 }
+
 const registerValidator = (data) => {
     const schema = Joi.object({
         name: Joi.string().min(3).required(),
@@ -25,6 +26,29 @@ const registerValidator = (data) => {
     return schema.validateAsync(data);
 }
 
+const loginValidator = (data) => {
+    const schema = Joi.object({
+        email: Joi.string().email().required(),
+        password: Joi.string().required(),
+    });
+
+    return schema.validateAsync(data);
+}
+
+const updateProfileValidator = (data) => {
+    const schema = Joi.object({
+        name: Joi.string().min(3).required(),
+        profession: Joi.string().min(3),
+        avatar: Joi.string(),
+        email: Joi.string().email().required(),
+        password: Joi.string().min(6).required(),
+    });
+
+    return schema.validateAsync(data);
+}
+
 module.exports = {
-    registerValidator
+    registerValidator,
+    loginValidator,
+    updateProfileValidator
 }

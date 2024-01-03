@@ -12,7 +12,7 @@ datasource db {
 
 model User {
   id        Int      @id @default(autoincrement())
-  name      String
+  name      String  @unique
   profession String?
   avatar    String?
   role      Role     @default(STUDENT)
