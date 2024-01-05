@@ -89,6 +89,11 @@ async function updateProfile(req, res)
             const emailExist = await prisma.user.findUnique({where: {email: data.email}})
             if(emailExist && data.email != user.email) return res.status(400).json(error(400, "Email already exists"))
         }
+        if(data.name)
+        {
+            const nameExist = await prisma.user.findUnique({where: {name: data.name}})
+            if(nameExist && data.name.toLowerCase() != user.name.toLowerCase()) return res.status(400).json(error(400, "Name already exists"))
+        }
         data.password = bcrypt.hashSync(data.password, 10)
         const updatedUser = await prisma.user.update({
             where: {id: parseInt(id)}, 

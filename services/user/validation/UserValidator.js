@@ -38,8 +38,8 @@ const loginValidator = (data) => {
 const updateProfileValidator = (data) => {
     const schema = Joi.object({
         name: Joi.string().min(3).required(),
-        profession: Joi.string().min(3),
-        avatar: Joi.string(),
+        profession: Joi.string().min(3).optional(),
+        avatar: Joi.string().optional(),
         email: Joi.string().email().required(),
         password: Joi.string().min(6).required(),
     });
