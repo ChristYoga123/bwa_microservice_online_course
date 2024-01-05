@@ -9,5 +9,6 @@ router.post('/auth/login', userHandler.login);
 router.post('/auth/refresh-tokens', userHandler.refreshToken);
 router.put('/:id/profile', verifyToken, userHandler.updateProfile);
 router.get('/', verifyToken, userHandler.getProfile);
+router.delete('/auth/logout', verifyToken, userHandler.logout);
 
 module.exports = router;

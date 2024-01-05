@@ -55,6 +55,27 @@ async function login(req, res) {
     }
 }
 
+async function logout(req, res) {
+    try {
+        const id = req.user.data.id;
+        await userApi.delete("/auth/logout", { data: { user_id: id } });
+        return res.json({
+            meta: {
+                status: "success",
+                code: 200,
+                message: "logout successfully"
+            }
+        });
+    }catch (err) {
+        if (err.code === "ECONNREFUSED") {
+        return res.status(500).json({ status: "error", message: "service unavailable" });
+        }
+
+        const { status, data } = err.response;
+        return res.status(status).json(data);
+    }
+}
+
 async function getProfile(req, res) {
     try {
         const id = req.user.data.id;
@@ -141,5 +162,6 @@ module.exports = {
     login,
     refreshToken,
     updateProfile,
-    getProfile
+    getProfile,
+    logout
 }
