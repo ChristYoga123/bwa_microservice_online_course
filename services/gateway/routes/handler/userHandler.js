@@ -55,6 +55,21 @@ async function login(req, res) {
     }
 }
 
+async function getProfile(req, res) {
+    try {
+        const id = req.user.data.id;
+        const user = await userApi.get(`/${id}`);
+        return res.json(user.data);
+    } catch (error) {
+        if (error.code === "ECONNREFUSED") {
+        return res.status(500).json({ status: "error", message: "service unavailable" });
+        }
+
+        const { status, data } = error.response;
+        return res.status(status).json(data);
+    }
+}
+
 async function updateProfile(req, res) {
     try {
         const id = req.user.data.id;
@@ -125,5 +140,6 @@ module.exports = {
     register,
     login,
     refreshToken,
-    updateProfile
+    updateProfile,
+    getProfile
 }
