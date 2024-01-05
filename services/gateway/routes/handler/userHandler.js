@@ -94,18 +94,17 @@ async function refreshToken(req, res) {
             if (email !== decoded.data.email) {
                 return res.status(403).json({ message: "email is not valid" })
             }
-        })
-
-        const token = jwt.sign({ data: { email } }, JWT_SECRET, { expiresIn: JWT_ACCESS_TOKEN_EXPIRED })
-        return res.json({
-            meta: {
-                status: "success",
-                code: 200,
-                message: "success"
-            },
-            data: {
-                token
-            }
+            const token = jwt.sign({ data: decoded.data }, JWT_SECRET, { expiresIn: JWT_ACCESS_TOKEN_EXPIRED })
+            return res.json({
+                meta: {
+                    status: "success",
+                    code: 200,
+                    message: "token refreshed"
+                },
+                data: {
+                    token
+                }
+            })
         })
 
     } catch (err) {

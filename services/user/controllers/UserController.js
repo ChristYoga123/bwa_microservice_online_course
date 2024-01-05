@@ -103,7 +103,7 @@ async function updateProfile(req, res)
         return res.status(200).json(success(200, "User updated", updatedUser))
     } catch(err)
     {
-        return res.status(500).json(error(500, "User data has been taken"))
+        return res.status(500).json(error(500, err.message))
     }
 
 }
