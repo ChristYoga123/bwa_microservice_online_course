@@ -31,7 +31,6 @@ async function login(req, res) {
         const data = user.data.data;
         const token = jwt.sign({ data }, JWT_SECRET, { expiresIn: JWT_ACCESS_TOKEN_EXPIRED });
         const refreshToken = jwt.sign({ data }, JWT_SECRET_REFRESH_TOKEN, { expiresIn: JWT_REFRESH_TOKEN_EXPIRED });
-        console.log(data.id);
         await refreshTokenApi.post("/", { token: refreshToken, user_id: data.id });
 
         return res.json({
