@@ -46,12 +46,12 @@ async function login(req, res)
         {
             return res.status(400).json(error(400, err.message))
         }
-        const user = await prisma.user.findUnique({
+        const user = await prisma.user.findFirstOrThrow({
             where: {email: data.email},
             select: {id: true, name: true, profession: true, avatar: true, email: true, password: true}
         })
         const passwordMatch = bcrypt.compareSync(data.password, user.password)
-        if(!user || !passwordMatch) return res.status(404).json(error(404, "Email or password is wrong"))
+        if(!user || !passwordMatch) return res.status(404).json(error(404, "No User found"))
         // hide password
         delete user.password
         return res.status(200).json(success(200, "Login success", user))
@@ -89,6 +89,11 @@ async function updateProfile(req, res)
             const emailExist = await prisma.user.findUnique({where: {email: data.email}})
             if(emailExist && data.email != user.email) return res.status(400).json(error(400, "Email already exists"))
         }
+        if(data.name)
+        {
+            const nameExist = await prisma.user.findUnique({where: {name: data.name}})
+            if(nameExist && data.name.toLowerCase() != user.name.toLowerCase()) return res.status(400).json(error(400, "Name already exists"))
+        }
         data.password = bcrypt.hashSync(data.password, 10)
         const updatedUser = await prisma.user.update({
             where: {id: parseInt(id)}, 
@@ -98,7 +103,7 @@ async function updateProfile(req, res)
         return res.status(200).json(success(200, "User updated", updatedUser))
     } catch(err)
     {
-        return res.status(500).json(error(500, "User data has been taken"))
+        return res.status(500).json(error(500, err.message))
     }
 
 }
