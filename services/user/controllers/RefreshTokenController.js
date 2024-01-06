@@ -35,7 +35,7 @@ async function storeToken(req, res)
 async function getToken(req, res)
 {
     const refresh_token = req.query.refresh_token;
-    const refreshToken = await prisma.refreshToken.findUnique({
+    const refreshToken = await prisma.refreshToken.findFirst({
         where: {
             token: refresh_token
         }
