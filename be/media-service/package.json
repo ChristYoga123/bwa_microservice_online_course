@@ -1,0 +1,22 @@
+{
+  "name": "media-service",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.8.1",
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "express": "~4.16.1",
+    "morgan": "~1.9.1"
+  },
+  "devDependencies": {
+    "base64-img": "^1.0.4",
+    "dotenv": "^16.3.1",
+    "is-base64": "^1.1.0",
+    "nodemon": "^3.0.3",
+    "prisma": "^5.8.1"
+  }
+}
